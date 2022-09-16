@@ -1,3 +1,5 @@
+using AspNetCoreRateLimit;
+using JbhifiApi.Middleware;
 using JbhifiApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +28,20 @@ namespace JbhifiApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddOptions();
+
+            services.AddMemoryCache();
+
+            services.Configure<ClientRateLimitOptions>(Configuration.GetSection("ClientRateLimiting"));
+
+            services.Configure<ClientRateLimitPolicies>(Configuration.GetSection("ClientRateLimitPolicies"));
+
+            services.AddInMemoryRateLimiting();
+
+            services.AddMvc();
+
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
             services.AddControllers();
 
             services.AddHttpClient("OpenWeatherMap", httpClient =>
@@ -43,6 +59,10 @@ namespace JbhifiApi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseApiKeyVerification();
+
+            app.UseClientRateLimiting();
 
             app.UseHttpsRedirection();
 
