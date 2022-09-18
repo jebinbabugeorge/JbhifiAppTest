@@ -38,6 +38,8 @@ namespace JbhifiApi
 
             services.AddInMemoryRateLimiting();
 
+            services.AddCors();
+
             services.AddMvc();
 
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
@@ -55,6 +57,8 @@ namespace JbhifiApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(x => x.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader());
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

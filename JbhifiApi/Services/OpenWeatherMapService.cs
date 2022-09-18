@@ -31,7 +31,10 @@ namespace JbhifiApi.Services
 
             var response = await httpClient.GetAsync(string.Format(Url, city, country, ApiKey));
 
-            response.EnsureSuccessStatusCode();
+            if(!response.IsSuccessStatusCode)
+            {
+                return "We couldn't find weather forecast for the given city and country. Please double check the city and country name and try again.";
+            }
 
             using var contentStream = await response.Content.ReadAsStreamAsync();
 
