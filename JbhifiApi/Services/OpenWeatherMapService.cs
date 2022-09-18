@@ -42,7 +42,7 @@ namespace JbhifiApi.Services
             if (!string.IsNullOrEmpty(description))
                 return $"The weather forecast for {city}, {country} is {description}";
 
-            return $"Could not find weather description for {city}, {country}";
+            return $"The weather forecast for {city}, {country} is not available at the moment. Please try again later.";
         }
     }
 }

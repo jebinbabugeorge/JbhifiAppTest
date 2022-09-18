@@ -12,19 +12,22 @@ namespace JbhifiApi.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private readonly ILogger<WeatherForecastController> _logger;
         private readonly IOpenWeatherMapService _openWeatherMapService;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, IOpenWeatherMapService openWeatherMapService)
+        public WeatherForecastController(IOpenWeatherMapService openWeatherMapService)
         {
-            _logger = logger;
             _openWeatherMapService = openWeatherMapService;
         }
 
         [HttpGet]
-        public async Task<string> Get(string city, string country)
+        public async Task<IActionResult> Get(string city, string country)
         {
-            return await _openWeatherMapService.GetWeatherDetailsAsync(city, country);
+            if (string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(country))
+                return BadRequest("City and Country cannot be empty.");
+
+            var description = await _openWeatherMapService.GetWeatherDetailsAsync(city, country);
+
+            return Ok(description);
         }
     }
 }
